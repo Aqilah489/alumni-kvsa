@@ -1,0 +1,79 @@
+/* login.css - Specific to login page */
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.login-card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.login-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.login-body {
+    padding: 2rem;
+    background: white;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 25px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.btn-login:hover {
+    transform: scale(1.05);
+    transition: 0.3s;
+    color: white;
+}
+
+.btn-login:active {
+    transform: scale(0.95);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #764ba2;
+    box-shadow: 0 0 0 0.2rem rgba(118, 75, 162, 0.25);
+}
+
+/* Style untuk toggle button */
+.input-group .btn {
+    border-color: #ced4da;
+}
+
+.input-group .btn:hover {
+    background-color: #f8f9fa;
+}
+
+.input-group .btn:active {
+    background-color: #e9ecef;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .login-header {
+        padding: 1.5rem;
+    }
+    
+    .login-header h3 {
+        font-size: 1.5rem;
+    }
+    
+    .login-body {
+        padding: 1.5rem;
+    }
+}
