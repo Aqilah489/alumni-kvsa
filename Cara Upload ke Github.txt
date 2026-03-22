@@ -1,0 +1,11 @@
+# 1. Pull dulu file dari GitHub (README & .gitignore)
+git pull origin main --allow-unrelated-histories
+
+# 2. Lepas tu, add semua file projek korang
+git add .
+
+# 3. Commit dengan mesej
+git commit -m "Upload project files - Sistem Alumni KVSA"
+
+# 4. Push ke GitHub
+git push origin main

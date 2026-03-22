@@ -180,12 +180,21 @@ if(isset($_SESSION['user_id'])) {
                             <button type="submit" name="login" class="btn btn-login w-100">
                                 <i class="bi bi-box-arrow-in-right me-2"></i>Log Masuk
                             </button>
+
+                            <!-- Link Lupa Password -->
+                            <div class="d-flex justify-content-between mt-3">
+                                <a href="reset_password_manual.php" class="text-decoration-none small">
+                                    <i class="bi bi-question-circle"></i> Lupa Password?
+                                </a>
+                                <!-- Boleh tambah link lain kalau perlu -->
+                                <span></span>
+                            </div>
                         </form>
                         
                         <!-- Footer -->
                         <hr class="my-4">
                         <div class="text-center text-muted small">
-                            <p class="mb-0">© 2024 Kolej Vokasional Shah Alam</p>
+                            <p class="mb-0">© 2026 Kolej Vokasional Shah Alam</p>
                         </div>
                     </div>
                 </div>

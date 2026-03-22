@@ -1,57 +1,107 @@
 /* login.css - Specific to login page */
+/* Recommended color palette */
+:root {
+    --primary: #2c3e50;      /* Dark blue-gray */
+    --primary-dark: #1a2632;
+    --accent: #3498db;        /* Bright blue for CTA */
+    --success: #27ae60;
+    --text-dark: #2c3e50;
+    --text-light: #7f8c8d;
+    --bg-light: #f8f9fa;
+    --border: #e1e8ed;
+}
 
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
+    background: linear-gradient(135deg, #eef2f3 0%, #d9e4f5 100%);;
     display: flex;
     align-items: center;
+    min-height: 100vh;
+    padding: 2rem 0;
+    font-family: Inter,sans-serif;
 }
 
 .login-card {
     border-radius: 15px;
     overflow: hidden;
+    /* Buang min-height, biar auto ikut content */
 }
 
 .login-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #212c5c;
     color: white;
-    padding: 2rem;
+    padding: 1rem;  /* Kurangkan dari 2rem ke 1rem */
     text-align: center;
 }
 
+.login-header i {
+    font-size: 2rem;  /* Kecilkan icon */
+}
+
+.login-header h3 {
+    margin: 0.5rem 0 0.25rem 0;  /* Kurangkan margin */
+    font-size: 1.5rem;  /* Kecilkan font */
+}
+
+.login-header p {
+    margin-bottom: 0;
+    font-size: 0.85rem;  /* Kecilkan font */
+}
+
 .login-body {
-    padding: 2rem;
+    padding: 1.2rem;  /* Kurangkan dari 2rem ke 1.2rem */
     background: white;
 }
 
+/* Kurangkan spacing antara form elements */
+.form-label {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.mb-3 {
+    margin-bottom: 0.75rem !important;
+}
+
+.mb-4 {
+    margin-bottom: 0.75rem !important;
+}
+
+/* Kecilkan input fields */
+.form-control, .form-select {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+}
+
+/* Button lebih kecil */
 .btn-login {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a2761 0%, #314883 100%);
     color: white;
     border: none;
-    padding: 10px;
+    padding: 12px;
     border-radius: 25px;
     font-weight: bold;
-    width: 100%;
+    transition: all 0.3s ease;
 }
 
 .btn-login:hover {
-    transform: scale(1.05);
-    transition: 0.3s;
-    color: white;
+    background: linear-gradient(135deg, #1a2761  0%, #314883 100%);
+    color: white !important;
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
 }
 
 .btn-login:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
 }
 
-.form-control:focus,
-.form-select:focus {
-    border-color: #764ba2;
-    box-shadow: 0 0 0 0.2rem rgba(118, 75, 162, 0.25);
+/* Kurangkan jarak hr line */
+hr {
+    margin: 0.75rem 0;
 }
 
-/* Style untuk toggle button */
+/* Toggle button size */
 .input-group .btn {
+    padding: 0.375rem 0.75rem;
     border-color: #ced4da;
 }
 
@@ -63,17 +113,42 @@ body {
     background-color: #e9ecef;
 }
 
+.form-control:focus,
+.form-select:focus {
+    border-color: #764ba2;
+    box-shadow: 0 0 0 0.2rem rgba(118, 75, 162, 0.25);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .login-header {
-        padding: 1.5rem;
+        padding: 0.8rem;
     }
     
     .login-header h3 {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+        margin: 0.25rem 0;
+    }
+    
+    .login-header p {
+        font-size: 0.75rem;
     }
     
     .login-body {
-        padding: 1.5rem;
+        padding: 1rem;
+    }
+    
+    .form-label {
+        font-size: 0.85rem;
+    }
+    
+    .form-control, .form-select {
+        font-size: 0.85rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .btn-login {
+        padding: 6px;
+        font-size: 0.85rem;
     }
 }
