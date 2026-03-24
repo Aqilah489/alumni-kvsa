@@ -382,31 +382,6 @@
             color: #6c757d;
         }
         
-        /* Program List */
-        .program-item-modern {
-            margin-bottom: 12px;
-        }
-        
-        .program-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 4px;
-            font-size: 0.75rem;
-        }
-        
-        .program-bar-modern {
-            background: #e9ecef;
-            border-radius: 6px;
-            height: 5px;
-            overflow: hidden;
-        }
-        
-        .program-fill-modern {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 6px;
-        }
-        
         /* Batch Grid */
         .batch-grid-modern {
             display: grid;
@@ -490,6 +465,8 @@
             border-radius: 8px;
             font-size: 0.75rem;
             cursor: pointer;
+            text-decoration: none;
+            color: var(--text-dark);
         }
         
         .action-btn:hover {
@@ -509,10 +486,6 @@
             border: 1px solid var(--border);
         }
         
-        .menu-toggle-btn {
-        display: none;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -539,34 +512,10 @@
                 text-align: center;
                 gap: 10px;
             }
-            
-            .menu-toggle-btn {
-        display: block;
-    }
-    
-    .sidebar {
-        left: -260px;
-        transition: left 0.3s ease;
-    }
-    
-    .sidebar.active {
-        left: 0;
-    }
-    
-    .main-content {
-        margin-left: 0;
-    }
-    
-    .simple-header {
-        position: relative;
-    }
-}
-
-        
+        }
         
         @media (max-width: 576px) {
             .action-grid {
                 grid-template-columns: 1fr;
             }
         }
-        

@@ -8,68 +8,23 @@ if(!isset($_SESSION['user_id']) || $_SESSION['role'] != 'kaunseling') {
     exit();
 }
 
-// ========== QUERY SEDIA ADA ==========
+$page_title = 'Dashboard';
+
+// ========== QUERIES ==========
 $total_alumni = $connect->query("SELECT COUNT(*) FROM alumni")->fetchColumn();
 $total_program = $connect->query("SELECT COUNT(*) FROM program")->fetchColumn();
-$total_batch = $connect->query("SELECT COUNT(*) FROM batch")->fetchColumn();
-
-// Alumni belum kemaskini
 $belum_kemaskini = $connect->query("SELECT COUNT(*) FROM alumni WHERE status_kemaskini = 'belum'")->fetchColumn();
 $telat_kemaskini = $total_alumni - $belum_kemaskini;
 $peratus_kemaskini = ($total_alumni > 0) ? round($telat_kemaskini / $total_alumni * 100) : 0;
 
-// Alumni terkini (5 orang terbaru)
-$alumni_terkini = $connect->query("
-    SELECT a.*, p.nama_program, b.nama_batch 
-    FROM alumni a
-    JOIN program p ON a.kod_program = p.kod_program
-    JOIN batch b ON a.batch_id = b.id
-    ORDER BY a.created_at DESC 
-    LIMIT 5
-")->fetchAll();
-
-// ========== STATISTIK BARU ==========
-
-// 1. Statistik Pekerjaan (guna field pekerjaan)
+// Statistics
 $bekerja = $connect->query("SELECT COUNT(*) FROM alumni WHERE pekerjaan IS NOT NULL AND pekerjaan != ''")->fetchColumn();
 $belum_bekerja = $total_alumni - $bekerja;
 
-// 2. Alumni baru bulan ini (guna created_at)
-$alumni_bulan_ini = $connect->query("
-    SELECT COUNT(*) FROM alumni 
-    WHERE MONTH(created_at) = MONTH(CURDATE()) 
-    AND YEAR(created_at) = YEAR(CURDATE())
-")->fetchColumn();
+$program_stats = $connect->query("SELECT p.nama_program, COUNT(a.alumni_id) as total FROM program p LEFT JOIN alumni a ON p.kod_program = a.kod_program GROUP BY p.kod_program ORDER BY total DESC")->fetchAll();
+$batch_stats = $connect->query("SELECT b.nama_batch, b.tahun_grad, COUNT(a.alumni_id) as total FROM batch b LEFT JOIN alumni a ON b.id = a.batch_id GROUP BY b.id ORDER BY b.tahun_grad DESC")->fetchAll();
 
-// 3. Statistik mengikut program (guna kod_program)
-$program_stats = $connect->query("
-    SELECT p.nama_program, COUNT(a.alumni_id) as total
-    FROM program p
-    LEFT JOIN alumni a ON p.kod_program = a.kod_program
-    GROUP BY p.kod_program
-    ORDER BY total DESC
-")->fetchAll();
-
-// 4. Statistik mengikut batch (guna batch_id)
-$batch_stats = $connect->query("
-    SELECT b.nama_batch, b.tahun_grad, COUNT(a.alumni_id) as total
-    FROM batch b
-    LEFT JOIN alumni a ON b.id = a.batch_id
-    GROUP BY b.id
-    ORDER BY b.tahun_grad DESC
-")->fetchAll();
-
-// 5. Statistik Julat Gaji (guna julat_gaji)
-$gaji_stats = $connect->query("
-    SELECT julat_gaji, COUNT(*) as total
-    FROM alumni 
-    WHERE julat_gaji IS NOT NULL AND julat_gaji != ''
-    GROUP BY julat_gaji
-    ORDER BY total DESC
-")->fetchAll();
-
-// Set default value
-if(!$alumni_bulan_ini) $alumni_bulan_ini = 0;
+// Set defaults
 if(!$bekerja) $bekerja = 0;
 if(!$belum_bekerja) $belum_bekerja = 0;
 ?>
@@ -81,23 +36,10 @@ if(!$belum_bekerja) $belum_bekerja = 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Kaunseling - Alumni KVSA</title>
     
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/dashboard_kaunseling.css?v=<?= time() ?>">
-    <link rel="stylesheet" href="../css/header.css?v=<?= time() ?>">
-    
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    <link rel="stylesheet" href="../css/dashboard_kaunseling.css">
 </head>
 <body>
 
@@ -108,8 +50,8 @@ if(!$belum_bekerja) $belum_bekerja = 0;
         <h3>Alumni KVSA</h3>
         <p>Kaunseling Panel</p>
     </div>
-
-    <nav class="nav-menu">
+    
+    <nav>
         <div class="nav-group">
             <label>MAIN</label>
             <a href="#" class="active">
@@ -118,7 +60,7 @@ if(!$belum_bekerja) $belum_bekerja = 0;
             <a href="alumni.php">
                 <i class="bi bi-people"></i> Alumni
             </a>
-            <a href="program.php">
+            <a href="program/senarai.php">
                 <i class="bi bi-book"></i> Program
             </a>
             <a href="batch.php">
@@ -154,186 +96,164 @@ if(!$belum_bekerja) $belum_bekerja = 0;
 
 <!-- Main Content -->
 <main class="main-content">
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="page-title">
-            <h2>Dashboard</h2>
-            <p>Selamat Datang ke Panel Kaunseling</p>
+    <!-- Header Simple -->
+    <div class="simple-header">
+        <div class="logo-area">
+            <i class="bi bi-mortarboard"></i>
+            <div>
+                <h4>Kolej Vokasional Shah Alam</h4>
+                <p>Sistem Penjejakan Alumni | Kaunseling</p>
+            </div>
         </div>
-        <div class="user-info">
+        <div class="user-area">
             <span><?= htmlspecialchars($_SESSION['nama'] ?? 'Kaunseling') ?></span>
             <i class="bi bi-person-circle"></i>
         </div>
     </div>
     
-    <!-- ========== DESIGN BARU ========== -->
-    <div class="dashboard-container">
-        <!-- Welcome Banner -->
-        <div class="welcome-banner">
-            <div class="welcome-text">
-                <h2>Selamat Datang, <?= htmlspecialchars($_SESSION['nama'] ?? 'Kaunseling') ?>! 👋</h2>
-                <p>Berikut adalah ringkasan data alumni KVSA</p>
-            </div>
-            <div class="date-badge">
-                <i class="bi bi-calendar3"></i>
-                <?= date('d F Y') ?>
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        <div class="welcome-text">
+            <h2>Selamat Datang, <?= htmlspecialchars($_SESSION['nama'] ?? 'Kaunseling') ?>! 👋</h2>
+            <p>Berikut adalah ringkasan data alumni KVSA</p>
+        </div>
+        <div class="date-badge">
+            <i class="bi bi-calendar3"></i>
+            <?= date('d F Y') ?>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-row">
+        <div class="stat-box stat-total">
+            <div class="stat-icon-bg"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-details">
+                <span class="stat-label">Jumlah Alumni</span>
+                <h2><?= $total_alumni ?></h2>
+                <small>keseluruhan</small>
             </div>
         </div>
-
-        <!-- Stats Cards Row 1 - Main Metrics -->
-        <div class="stats-row">
-            <div class="stat-box stat-total">
-                <div class="stat-icon-bg">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-                <div class="stat-details">
-                    <span class="stat-label">Total Alumni</span>
-                    <h2><?= $total_alumni ?></h2>
-                    <small>keseluruhan</small>
-                </div>
-            </div>
-            
-            <div class="stat-box stat-updated">
-                <div class="stat-icon-bg">
-                    <i class="bi bi-check-circle-fill"></i>
-                </div>
-                <div class="stat-details">
-                    <span class="stat-label">Telah Kemaskini</span>
-                    <h2><?= $telat_kemaskini ?></h2>
-                    <small><?= $peratus_kemaskini ?>% daripada total</small>
-                </div>
-            </div>
-            
-            <div class="stat-box stat-pending">
-                <div class="stat-icon-bg">
-                    <i class="bi bi-clock-history"></i>
-                </div>
-                <div class="stat-details">
-                    <span class="stat-label">Belum Kemaskini</span>
-                    <h2><?= $belum_kemaskini ?></h2>
-                    <small>perlu tindakan</small>
-                </div>
+        
+        <div class="stat-box stat-updated">
+            <div class="stat-icon-bg"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="stat-details">
+                <span class="stat-label">Telah Kemaskini</span>
+                <h2><?= $telat_kemaskini ?></h2>
+                <small><?= $peratus_kemaskini ?>% daripada total</small>
             </div>
         </div>
-
-        <!-- Progress Card -->
-        <div class="progress-section">
-            <div class="progress-header">
-                <h3><i class="bi bi-graph-up"></i> Status Kemaskini Alumni</h3>
-                <span class="progress-badge"><?= $peratus_kemaskini ?>% Lengkap</span>
-            </div>
-            <div class="progress-bar-custom">
-                <div class="progress-fill-custom" style="width: <?= $peratus_kemaskini ?>%">
-                    <span><?= $peratus_kemaskini ?>%</span>
-                </div>
-            </div>
-            <div class="progress-details">
-                <div class="detail-item">
-                    <i class="bi bi-check-circle-fill text-success"></i>
-                    <span><?= $telat_kemaskini ?> alumni telah lengkapkan data</span>
-                </div>
-                <div class="detail-item">
-                    <i class="bi bi-exclamation-triangle-fill text-warning"></i>
-                    <span><?= $belum_kemaskini ?> alumni belum kemaskini</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stats Row 2 - Employment & Program -->
-        <div class="two-columns">
-            <!-- Employment Card -->
-            <div class="card-modern">
-                <div class="card-header-modern">
-                    <h3><i class="bi bi-briefcase-fill"></i> Status Pekerjaan</h3>
-                    <i class="bi bi-info-circle tooltip-icon" data-bs-toggle="tooltip" title="Alumni yang telah mengisi maklumat pekerjaan"></i>
-                </div>
-                <div class="employment-stats">
-                    <div class="employment-item">
-                        <div class="employment-info">
-                            <span class="employment-label">Bekerja</span>
-                            <span class="employment-value"><?= $bekerja ?> alumni</span>
-                        </div>
-                        <div class="employment-bar">
-                            <div class="employment-fill employ-fill-success" style="width: <?= ($total_alumni > 0) ? round($bekerja/$total_alumni*100) : 0 ?>%"></div>
-                        </div>
-                        <span class="employment-percent"><?= ($total_alumni > 0) ? round($bekerja/$total_alumni*100) : 0 ?>%</span>
-                    </div>
-                    <div class="employment-item">
-                        <div class="employment-info">
-                            <span class="employment-label">Belum Bekerja / Tidak Diketahui</span>
-                            <span class="employment-value"><?= $belum_bekerja ?> alumni</span>
-                        </div>
-                        <div class="employment-bar">
-                            <div class="employment-fill employ-fill-secondary" style="width: <?= ($total_alumni > 0) ? round($belum_bekerja/$total_alumni*100) : 0 ?>%"></div>
-                        </div>
-                        <span class="employment-percent"><?= ($total_alumni > 0) ? round($belum_bekerja/$total_alumni*100) : 0 ?>%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Program Distribution Card -->
-            <div class="card-modern">
-                <div class="card-header-modern">
-                    <h3><i class="bi bi-mortarboard-fill"></i> Taburan Program</h3>
-                    <i class="bi bi-info-circle tooltip-icon" data-bs-toggle="tooltip" title="Bilangan alumni mengikut program"></i>
-                </div>
-                <div class="program-list-modern">
-                    <?php if(count($program_stats) > 0): ?>
-                        <?php foreach(array_slice($program_stats, 0, 4) as $program): ?>
-                        <div class="program-item-modern">
-                            <div class="program-info">
-                                <span class="program-name-modern"><?= htmlspecialchars($program['nama_program']) ?></span>
-                                <span class="program-count-modern"><?= $program['total'] ?> orang</span>
-                            </div>
-                            <div class="program-bar-modern">
-                                <div class="program-fill-modern" style="width: <?= ($total_alumni > 0) ? round($program['total']/$total_alumni*100) : 0 ?>%"></div>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                        <?php if(count($program_stats) > 4): ?>
-                        <div class="view-more">
-                            <a href="program.php">+<?= count($program_stats) - 4 ?> program lagi</a>
-                        </div>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <div class="text-center text-muted py-3">Tiada data program</div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        <!-- Batch Distribution -->
-        <div class="card-modern full-width">
-            <div class="card-header-modern">
-                <h3><i class="bi bi-calendar-range-fill"></i> Taburan Mengikut Batch</h3>
-                <i class="bi bi-info-circle tooltip-icon" data-bs-toggle="tooltip" title="Alumni mengikut tahun graduasi"></i>
-            </div>
-            <div class="batch-grid-modern">
-                <?php if(count($batch_stats) > 0): ?>
-                    <?php foreach($batch_stats as $batch): ?>
-                    <div class="batch-card-modern">
-                        <div class="batch-year-modern"><?= $batch['tahun_grad'] ?? 'Tidak Diketahui' ?></div>
-                        <div class="batch-name-modern"><?= htmlspecialchars($batch['nama_batch']) ?></div>
-                        <div class="batch-count-modern"><?= $batch['total'] ?> Alumni</div>
-                        <div class="batch-progress-modern">
-                            <div class="batch-progress-fill" style="width: <?= ($total_alumni > 0) ? round($batch['total']/$total_alumni*100) : 0 ?>%"></div>
-                        </div>
-                        <div class="batch-percent-modern"><?= ($total_alumni > 0) ? round($batch['total']/$total_alumni*100) : 0 ?>%</div>
-                    </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="text-center text-muted py-3">Tiada data batch</div>
-                <?php endif; ?>
+        
+        <div class="stat-box stat-pending">
+            <div class="stat-icon-bg"><i class="bi bi-clock-history"></i></div>
+            <div class="stat-details">
+                <span class="stat-label">Belum Kemaskini</span>
+                <h2><?= $belum_kemaskini ?></h2>
+                <small>perlu tindakan</small>
             </div>
         </div>
     </div>
-    
+
+    <!-- Progress Card -->
+    <div class="progress-section">
+        <div class="progress-header">
+            <h3><i class="bi bi-graph-up"></i> Status Kemaskini Alumni</h3>
+            <span class="progress-badge"><?= $peratus_kemaskini ?>% Lengkap</span>
+        </div>
+        <div class="progress-bar-custom">
+            <div class="progress-fill-custom" style="width: <?= $peratus_kemaskini ?>%">
+                <span><?= $peratus_kemaskini ?>%</span>
+            </div>
+        </div>
+        <div class="progress-details">
+            <div class="detail-item">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <span><?= $telat_kemaskini ?> alumni telah lengkapkan data</span>
+            </div>
+            <div class="detail-item">
+                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                <span><?= $belum_kemaskini ?> alumni belum kemaskini</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two Columns -->
+    <div class="two-columns">
+        <!-- Employment Card -->
+        <div class="card-modern">
+            <div class="card-header-modern">
+                <h3><i class="bi bi-briefcase-fill"></i> Status Pekerjaan</h3>
+            </div>
+            <div class="employment-stats">
+                <div class="employment-item">
+                    <div class="employment-info">
+                        <span>Bekerja</span>
+                        <span><?= $bekerja ?> alumni</span>
+                    </div>
+                    <div class="employment-bar">
+                        <div class="employment-fill employ-fill-success" style="width: <?= ($total_alumni > 0) ? round($bekerja/$total_alumni*100) : 0 ?>%"></div>
+                    </div>
+                    <div class="employment-percent"><?= ($total_alumni > 0) ? round($bekerja/$total_alumni*100) : 0 ?>%</div>
+                </div>
+                <div class="employment-item">
+                    <div class="employment-info">
+                        <span>Belum Bekerja / Tidak Diketahui</span>
+                        <span><?= $belum_bekerja ?> alumni</span>
+                    </div>
+                    <div class="employment-bar">
+                        <div class="employment-fill employ-fill-secondary" style="width: <?= ($total_alumni > 0) ? round($belum_bekerja/$total_alumni*100) : 0 ?>%"></div>
+                    </div>
+                    <div class="employment-percent"><?= ($total_alumni > 0) ? round($belum_bekerja/$total_alumni*100) : 0 ?>%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Program Card -->
+        <div class="card-modern">
+            <div class="card-header-modern">
+                <h3><i class="bi bi-mortarboard-fill"></i> Taburan Program</h3>
+            </div>
+            <div class="program-list-modern">
+                <?php foreach(array_slice($program_stats, 0, 5) as $program): ?>
+                <div class="program-item-modern">
+                    <div class="program-info">
+                        <span><?= htmlspecialchars($program['nama_program']) ?></span>
+                        <span><?= $program['total'] ?> orang</span>
+                    </div>
+                    <div class="program-bar-modern">
+                        <div class="program-fill-modern" style="width: <?= ($total_alumni > 0) ? round($program['total']/$total_alumni*100) : 0 ?>%"></div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch Card -->
+    <div class="card-modern">
+        <div class="card-header-modern">
+            <h3><i class="bi bi-calendar-range-fill"></i> Taburan Mengikut Batch</h3>
+        </div>
+        <div class="batch-grid-modern">
+            <?php foreach($batch_stats as $batch): ?>
+            <div class="batch-card-modern">
+                <div class="batch-year-modern"><?= $batch['tahun_grad'] ?? 'Tidak Diketahui' ?></div>
+                <div class="batch-name-modern"><?= htmlspecialchars($batch['nama_batch']) ?></div>
+                <div class="batch-count-modern"><?= $batch['total'] ?> Alumni</div>
+                <div class="batch-progress-modern">
+                    <div class="batch-progress-fill" style="width: <?= ($total_alumni > 0) ? round($batch['total']/$total_alumni*100) : 0 ?>%"></div>
+                </div>
+                <div class="batch-percent-modern"><?= ($total_alumni > 0) ? round($batch['total']/$total_alumni*100) : 0 ?>%</div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
     <!-- Quick Actions -->
     <div class="quick-actions">
         <h4><i class="bi bi-lightning-charge"></i> Quick Actions</h4>
         <div class="action-grid">
             <button class="action-btn" onclick="window.location.href='tambah_alumni.php'">
-                <i class="bi bi-person-plus-fill"></i> Tambah Alumni Baru
+                <i class="bi bi-person-plus-fill"></i> Tambah Alumni
             </button>
             <button class="action-btn" onclick="window.location.href='tambah_kp.php'">
                 <i class="bi bi-person-badge-plus"></i> Tambah Ketua Program
@@ -346,57 +266,47 @@ if(!$belum_bekerja) $belum_bekerja = 0;
             </button>
         </div>
     </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        <i class="bi bi-c-circle"></i> <?= date('Y') ?> Kolej Vokasional Shah Alam. Hak Cipta Terpelihara.
+    </div>
 </main>
 
-<!-- ========== SCRIPTS ========== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    // Wait for DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Bootstrap tooltips if available
-        if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
+    // Toggle sidebar on mobile
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    }
+    
+    // Add menu button for mobile
+    const header = document.querySelector('.simple-header');
+    if (header && window.innerWidth <= 768) {
+        const menuBtn = document.createElement('button');
+        menuBtn.innerHTML = '<i class="bi bi-list"></i>';
+        menuBtn.className = 'menu-toggle-btn';
+        menuBtn.style.cssText = 'background:none;border:none;font-size:1.5rem;color:var(--primary);cursor:pointer;margin-right:10px;';
+        menuBtn.onclick = toggleSidebar;
+        header.insertBefore(menuBtn, header.firstChild);
+    }
+    
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+        const sidebar = document.querySelector('.sidebar');
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile && sidebar && !sidebar.contains(event.target) && !event.target.closest('.menu-toggle-btn')) {
+            sidebar.classList.remove('active');
         }
     });
     
-    // Action functions
-    function viewAlumni(id) {
-        window.location.href = 'view_alumni.php?id=' + id;
-    }
-    
-    function editAlumni(id) {
-        window.location.href = 'edit_alumni.php?id=' + id;
-    }
-    
-    function messageAlumni(id) {
-        window.location.href = 'message_alumni.php?id=' + id;
-    }
-    
-    // Optional: Search function if needed
-    function searchAlumni() {
-        let input = document.getElementById('searchInput');
-        if(input) {
-            let filter = input.value.toUpperCase();
-            let table = document.getElementById('alumniTable');
-            if(table) {
-                let rows = table.getElementsByTagName('tr');
-                for(let i = 0; i < rows.length; i++) {
-                    let name = rows[i].getElementsByTagName('td')[1];
-                    let matrix = rows[i].getElementsByTagName('td')[0];
-                    if(name || matrix) {
-                        let textValue = (name ? name.textContent : '') + (matrix ? matrix.textContent : '');
-                        rows[i].style.display = textValue.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
-                    }
-                }
-            }
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        const sidebar = document.querySelector('.sidebar');
+        if (window.innerWidth > 768 && sidebar) {
+            sidebar.classList.remove('active');
         }
-    }
+    });
 </script>
-</body>
-</html>
 </body>
 </html>

@@ -1,0 +1,321 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1e3c72;
+            --primary-dark: #2a5298;
+            --accent: #3498db;
+            --success: #28a745;
+            --danger: #e74c3c;
+            --warning: #ffc107;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --bg-light: #f8f9fa;
+            --border: #e9ecef;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 20px 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header i {
+            font-size: 2rem;
+        }
+        
+        .sidebar-header h3 {
+            font-size: 1.1rem;
+            margin: 8px 0 5px;
+        }
+        
+        .sidebar-header p {
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+        
+        .nav-group {
+            padding: 0 15px;
+            margin: 20px 0;
+        }
+        
+        .nav-group label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            display: block;
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+        
+        .nav-group a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: 10px;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .nav-group a:hover, .nav-group a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        
+        .nav-group a i {
+            width: 24px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 20px 25px;
+            min-height: 100vh;
+        }
+        
+        /* Header Simple */
+        .simple-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-area i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .logo-area h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--primary);
+        }
+        
+        .logo-area p {
+            font-size: 0.7rem;
+            margin: 0;
+            color: var(--text-light);
+        }
+        
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 30px;
+        }
+        
+        .user-area:hover {
+            background: var(--bg-light);
+        }
+        
+        .user-area span {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        .user-area i {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+        
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .welcome-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .date-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+        }
+        
+        /* Profile Card */
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .profile-header i {
+            font-size: 4rem;
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 50%;
+        }
+        
+        .profile-header h3 {
+            margin-top: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .profile-body {
+            padding: 25px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .info-value {
+            color: var(--text-light);
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+        
+        .status-updated {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .quick-actions h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 30px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -260px;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+            .welcome-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
