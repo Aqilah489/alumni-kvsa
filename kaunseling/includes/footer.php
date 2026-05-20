@@ -8,6 +8,10 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     // Toggle sidebar on mobile
     function toggleSidebar() {
@@ -41,6 +45,51 @@
             sidebar.classList.remove('active');
         }
     });
+
+    // Confirm delete function
+    function confirmDelete(id, name, module) {
+    Swal.fire({
+        title: 'Padam ' + name + '?',
+        text: "Tindakan ini tidak boleh dibatalkan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Ya, Padam!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Panggil padam.php kat root kaunseling
+            window.location.href = '../padam.php?id=' + id + '&module=' + module;
+        }
+    });
+}
 </script>
+
+<?php
+// Display SweetAlert for session messages
+if(isset($_SESSION['success'])): ?>
+<script>
+Swal.fire({
+    title: 'Berjaya!',
+    text: '<?= addslashes($_SESSION['success']) ?>',
+    icon: 'success',
+    confirmButtonColor: '#28a745',
+    timer: 3000,
+    showConfirmButton: true
+});
+</script>
+<?php unset($_SESSION['success']); endif; ?>
+
+<?php if(isset($_SESSION['error'])): ?>
+<script>
+Swal.fire({
+    title: 'Gagal!',
+    text: '<?= addslashes($_SESSION['error']) ?>',
+    icon: 'error',
+    confirmButtonColor: '#dc3545'
+});
+</script>
+<?php unset($_SESSION['error']); endif; ?>
+
 </body>
 </html>

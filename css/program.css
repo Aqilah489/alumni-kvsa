@@ -776,3 +776,23 @@ body {
         position: relative;
     }
 }
+/* Dalam main.css atau batch.css */
+.swal2-popup {
+    font-family: 'Inter', sans-serif;
+    border-radius: 16px;
+}
+
+.swal2-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.swal2-confirm {
+    border-radius: 10px !important;
+    padding: 8px 24px !important;
+}
+
+.swal2-cancel {
+    border-radius: 10px !important;
+    padding: 8px 24px !important;
+}

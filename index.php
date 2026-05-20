@@ -36,7 +36,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     elseif($role == 'alumni') {
         $table = 'alumni';
         $id_field = 'alumni_id';
-        $redirect = 'alumni/dashboard.php';
+        $redirect = 'alumni/profil.php';
     }
     else {
         $error = "Sila pilih role yang sah!";
@@ -60,7 +60,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             // Untuk KP, simpan kod_program juga
             if($role == 'ketua_program') {
-                $_SESSION['kod_program'] = $user['kod_program'];
+                $_SESSION['program'] = $user['program'];
             }
             
             header("Location: $redirect");
@@ -82,7 +82,7 @@ if(isset($_SESSION['user_id'])) {
         exit();
     }
     elseif($_SESSION['role'] == 'alumni') {
-        header('Location: alumni/dashboard.php');
+        header('Location: alumni/profil.php');
         exit();
     }
 }
@@ -182,11 +182,11 @@ if(isset($_SESSION['user_id'])) {
                             </button>
 
                             <!-- Link Lupa Password -->
-                            <div class="d-flex justify-content-between mt-3">
-                                <a href="reset_password_manual.php" class="text-decoration-none small">
+                            <!--<div class="d-flex justify-content-between mt-3">
+                                <a href="lupa_password.php" class="text-decoration-none small">
                                     <i class="bi bi-question-circle"></i> Lupa Password?
-                                </a>
-                                <!-- Boleh tambah link lain kalau perlu -->
+                                </a>-->
+                        
                                 <span></span>
                             </div>
                         </form>

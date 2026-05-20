@@ -1,5 +1,6 @@
 <?php
 // header.php - Header untuk kaunseling module
+
 if(!isset($_SESSION)) {
     session_start();
 }
@@ -42,3 +43,5 @@ if(isset($page_css)): ?>
             <i class="bi bi-person-circle"></i>
         </div>
     </div>
+    <!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

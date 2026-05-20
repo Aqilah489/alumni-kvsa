@@ -1,7 +1,5 @@
 <?php
-// sidebar.php - Sidebar untuk kaunseling module
-$current_page = basename($_SERVER['PHP_SELF']);
-$current_dir = basename(dirname($_SERVER['PHP_SELF']));
+// sidebar.php - Kaunseling module
 ?>
 <aside class="sidebar">
     <div class="sidebar-header text-center">
@@ -13,40 +11,34 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
     <nav>
         <div class="nav-group">
             <label>MAIN</label>
-            <a href="../dashboard_kaunseling.php" class="<?= $current_page == 'dashboard_kaunseling.php' ? 'active' : '' ?>">
+            <a href="/Sistem Penjejakan Alumni/kaunseling/dashboard_kaunseling.php">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <a href="../alumni/index.php" class="<?= $current_dir == 'alumni' ? 'active' : '' ?>">
+            <a href="/Sistem Penjejakan Alumni/kaunseling/alumni/senarai.php">
                 <i class="bi bi-people"></i> Alumni
-            </a>
-            <a href="../program/senarai.php" class="<?= $current_dir == 'program' ? 'active' : '' ?>">
-                <i class="bi bi-book"></i> Program
-            </a>
-            <a href="../batch/index.php" class="<?= $current_dir == 'batch' ? 'active' : '' ?>">
-                <i class="bi bi-calendar"></i> Batch
             </a>
         </div>
         
         <div class="nav-group">
             <label>MANAGEMENT</label>
-            <a href="../ketua_program/index.php">
+            <a href="/Sistem Penjejakan Alumni/kaunseling/ketua_program/senarai.php">
                 <i class="bi bi-person-badge"></i> Ketua Program
             </a>
         </div>
         
         <div class="nav-group">
             <label>REPORTS</label>
-            <a href="../laporan/index.php">
+            <a href="/Sistem Penjejakan Alumni/kaunseling/laporan/laporan.php">
                 <i class="bi bi-file-text"></i> Laporan
             </a>
         </div>
         
         <div class="nav-group">
             <label>ACCOUNT</label>
-            <a href="../profile.php">
+            <a href="/Sistem Penjejakan Alumni/kaunseling/profil.php">
                 <i class="bi bi-person-circle"></i> Profil
             </a>
-            <a href="../../logout.php">
+            <a href="/Sistem Penjejakan Alumni/logout.php" onclick="return confirm('Anda pasti mahu log keluar?')">
                 <i class="bi bi-box-arrow-right"></i> Log Keluar
             </a>
         </div>
